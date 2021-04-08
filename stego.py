@@ -13,10 +13,8 @@ def Encode(src, message, dest):
 
     if img.mode == 'RGB':
         n = 3
-        m = 0
     elif img.mode == 'RGBA':
         n = 4
-        m = 1
 
     total_pixels = array.size//n
 
@@ -30,7 +28,7 @@ def Encode(src, message, dest):
     else:
         index=0
         for p in range(total_pixels):
-            for q in range(m, n):
+            for q in range(0, 3):
                 if index < req_pixels:
                     array[p][q] = int(bin(array[p][q])[2:9] + b_message[index], 2)
                     index += 1
@@ -49,16 +47,14 @@ def Decode(src):
 
     if img.mode == 'RGB':
         n = 3
-        m = 0
     elif img.mode == 'RGBA':
         n = 4
-        m = 1
 
     total_pixels = array.size//n
 
     hidden_bits = ""
     for p in range(total_pixels):
-        for q in range(m, n):
+        for q in range(0, 3):
             hidden_bits += (bin(array[p][q])[2:][-1])
 
     hidden_bits = [hidden_bits[i:i+8] for i in range(0, len(hidden_bits), 8)]
