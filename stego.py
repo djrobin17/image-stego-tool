@@ -5,7 +5,8 @@ from PIL import Image
 np.set_printoptions(threshold=sys.maxsize)
 
 #encoding function
-def Encode(src, message, dest):
+password = ""
+def Encode(src, message, dest,password):
 
     img = Image.open(src, 'r')
     width, height = img.size
@@ -18,7 +19,7 @@ def Encode(src, message, dest):
 
     total_pixels = array.size//n
 
-    message += "$t3g0"
+    message += password
     b_message = ''.join([format(ord(i), "08b") for i in message])
     req_pixels = len(b_message)
 
@@ -40,7 +41,7 @@ def Encode(src, message, dest):
 
 
 #decoding function
-def Decode(src):
+def Decode(src, password):
 
     img = Image.open(src, 'r')
     array = np.array(list(img.getdata()))
@@ -60,15 +61,20 @@ def Decode(src):
     hidden_bits = [hidden_bits[i:i+8] for i in range(0, len(hidden_bits), 8)]
 
     message = ""
+    hiddenmessage = ""
     for i in range(len(hidden_bits)):
-        if message[-5:] == "$t3g0":
+        x = len(password)
+        if message[-x:] == password:
             break
         else:
             message += chr(int(hidden_bits[i], 2))
-    if "$t3g0" in message:
-        print("Hidden Message:", message[:-5])
+            message = f'{message}'
+            hiddenmessage = message
+    #verifying the password
+    if password in message:
+        print("Hidden Message:", hiddenmessage[:-x])
     else:
-        print("No Hidden Message Found")
+        print("You entered the wrong password: Please Try Again")
 
 #main function
 def Stego():
@@ -85,14 +91,18 @@ def Stego():
         message = input()
         print("Enter Destination Image Path")
         dest = input()
+        print("Enter password")
+        password =  input()
         print("Encoding...")
-        Encode(src, message, dest)
+        Encode(src, message, dest,password)
 
     elif func == '2':
         print("Enter Source Image Path")
         src = input()
+        print("Enter Password")
+        password = input()
         print("Decoding...")
-        Decode(src)
+        Decode(src,password)
 
     else:
         print("ERROR: Invalid option chosen")
