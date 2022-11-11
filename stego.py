@@ -23,7 +23,7 @@ def Encode(src, message, dest,password):
     b_message = ''.join([format(ord(i), "08b") for i in message])
     req_pixels = len(b_message)
 
-    if req_pixels > total_pixels:
+    if req_pixels > (total_pixels * 3):
         print("ERROR: Need larger file size")
 
     else:
